@@ -677,6 +677,7 @@ class Docker ( Host ):
         * updateCpuLimits(...)
         * updateMemoryLimits(...)
         """
+
         self.dimage = dimage
         self.dnameprefix = "mn"
         self.dcmd = dcmd if dcmd is not None else "/bin/bash"
@@ -685,6 +686,12 @@ class Docker ( Host ):
         self.did = None # Id of running container
         #  let's store our resource limits to have them available through the
         #  Mininet API later on
+	
+	if 'vol' in kwargs:
+		myvol = [kwargs['vol']] 
+	else:
+		myvol = []
+
         defaults = { 'cpu_quota': -1,
                      'cpu_period': None,
                      'cpu_shares': None,
@@ -692,14 +699,16 @@ class Docker ( Host ):
                      'mem_limit': None,
                      'memswap_limit': None,
                      'environment': {},
-                     'volumes': [],  # use ["/home/user1/:/mnt/vol2:rw"]
+                     'volumes': myvol, #[],  # use ["/home/user1/:/mnt/vol2:rw"]
                      'network_mode': None,
                      'publish_all_ports': True,
                      'port_bindings': {},
                      'ports': [],
                      'dns': [],
                      }
+
         defaults.update( kwargs )
+	print(defaults)
 
         # keep resource in a dict for easy update during container lifetime
         self.resources = dict(
@@ -712,6 +721,7 @@ class Docker ( Host ):
         )
 
         self.volumes = defaults['volumes']
+
         self.environment = {} if defaults['environment'] is None else defaults['environment']
         # setting PS1 at "docker run" may break the python docker api (update_container hangs...)
         # self.environment.update({"PS1": chr(127)})  # CLI support
@@ -762,7 +772,7 @@ class Docker ( Host ):
             hostname=name
         )
 
-        # start the container
+       # start the container
         self.dcli.start(self.dc)
         debug("Docker container %s started\n" % name)
 
