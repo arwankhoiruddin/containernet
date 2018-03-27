@@ -52,3 +52,7 @@
      shell: docker pull ubuntu:trusty
      tags:
         - notindocker
+   - name: download 'heterodoop' docker image
+     shell: docker pull arwankhoiruddin/heterodoop:latest
+     tags:
+        - notindocker
